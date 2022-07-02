@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from "react"
 import { Button } from "../button"
 import { FormItem } from "../form-item"
+import Pagination from "../pagination/pagination"
 
 export function DataGrid() {
 
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
 
+  //sayfa değişimini yakalamsını istediğim methodu buraya yazacağım
+  const [currentPage, setCurrentPage] = useState(1);
+  const [employeesPerPage] = useState(20)
+
   const [todo, setTodo] = useState(null)
 
   useEffect(() => {
     loadData()
   }, [])
+
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+  const currentEmployees = items.slice(indexOfFirstEmployee, indexOfLastEmployee);
+  const totalPagesNum = Math.ceil(items.length / employeesPerPage)
+
 
   const loadData = () => {
     setLoading(true)
@@ -20,10 +31,10 @@ export function DataGrid() {
       .then(response => {
         setItems(response)
         setLoading(false)
-    }).catch(e => {
-      console.log(e)
-      setLoading(false)
-    })
+      }).catch(e => {
+        console.log(e)
+        setLoading(false)
+      })
   }
 
   const renderBody = () => {
@@ -48,22 +59,24 @@ export function DataGrid() {
 
   const renderTable = () => {
     return (
-    <>
-      <Button onClick={onAdd}>Ekle</Button>
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Başlık</th>
-            <th scope="col">Durum</th>
-            <th scope="col">Aksiyonlar</th>
-          </tr>
-        </thead>
-        <tbody>
-          {renderBody()}
-        </tbody>
-      </table>
-    </>
+      <>
+        <Button onClick={onAdd}>Ekle</Button>
+        <Pagination pages={totalPagesNum} setCurrentPage={setCurrentPage} />
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Başlık</th>
+              <th scope="col">Durum</th>
+              <th scope="col">Aksiyonlar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {renderBody()}
+          </tbody>
+        </table>
+
+      </>
     )
   }
 
@@ -105,7 +118,7 @@ export function DataGrid() {
       return
     }
     const index = items.findIndex(item => item.id == id)
-    
+
     setItems(items => {
       items.splice(index, 1)
       return [...items]
@@ -115,7 +128,7 @@ export function DataGrid() {
   const onEdit = (todo) => {
     setTodo(todo)
   }
-  
+
   const cancel = () => {
     setTodo(null)
   }
@@ -127,7 +140,7 @@ export function DataGrid() {
           title="Title"
           value={todo.title}
           onChange={e => setTodo(todos => {
-            return {...todos, title: e.target.value}
+            return { ...todos, title: e.target.value }
           })}
         />
         <FormItem
@@ -135,7 +148,7 @@ export function DataGrid() {
           title="Completed"
           value={todo.completed}
           onChange={e => setTodo(todos => {
-            return {...todos, completed: e.target.checked}
+            return { ...todos, completed: e.target.checked }
           })}
         />
         <Button onClick={saveChanges}>Kaydet</Button>
@@ -143,11 +156,11 @@ export function DataGrid() {
       </>
     )
   }
-  
+
   return (
     <>
-      { loading ? "Yükleniyor...." : (todo ? renderEditForm() : renderTable())}
-    
+      {loading ? "Yükleniyor...." : (todo ? renderEditForm() : renderTable())}
+
     </>
   )
 }
