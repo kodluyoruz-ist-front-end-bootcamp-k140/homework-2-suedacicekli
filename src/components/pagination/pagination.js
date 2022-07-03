@@ -11,12 +11,11 @@ const Pagination = ({ pages, setCurrentPage }) => {
     }
 
 
-
-
     const [currentButton, setCurrentButton] = useState(1);
 
     console.log(pages);
 
+    // useEffect ile sayfa değiştiği zaman yenileneerek yeni verilerin yazdırılması sağlandı.
     useEffect(() => {
         setCurrentPage(currentButton)
     }, [currentButton, setCurrentPage])
