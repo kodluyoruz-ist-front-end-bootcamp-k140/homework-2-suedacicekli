@@ -10,9 +10,12 @@ export function DataGrid() {
 
   //sayfa değişimini yakalamsını istediğim methodu buraya yazacağım
   const [currentPage, setCurrentPage] = useState(1);
-  const [employeesPerPage] = useState(20)
+  const [employeesPerPage] = useState(10)
 
   const [todo, setTodo] = useState(null)
+
+
+
 
   useEffect(() => {
     loadData()
@@ -23,6 +26,7 @@ export function DataGrid() {
   const currentEmployees = items.slice(indexOfFirstEmployee, indexOfLastEmployee);
   const totalPagesNum = Math.ceil(items.length / employeesPerPage)
 
+  // console.log(currentEmployees);
 
   const loadData = () => {
     setLoading(true)
@@ -40,7 +44,7 @@ export function DataGrid() {
   const renderBody = () => {
     return (
       <React.Fragment>
-        {items.sort((a, b) => b.id - a.id).map((item, i) => {
+        {currentEmployees.sort((a, b) => a.id - b.id).map((item, i) => {
           return (
             <tr key={i}>
               <th scope="row" >{item.id}</th>

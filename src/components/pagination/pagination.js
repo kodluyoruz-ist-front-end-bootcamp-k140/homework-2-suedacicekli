@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // Pagination bar oluşturuluyor.
 const Pagination = ({ pages, setCurrentPage }) => {
     // sayfa sayısını belirtelim
@@ -10,9 +10,16 @@ const Pagination = ({ pages, setCurrentPage }) => {
         numOfPages.push(i);
     }
 
+
+
+
     const [currentButton, setCurrentButton] = useState(1);
 
+    console.log(pages);
 
+    useEffect(() => {
+        setCurrentPage(currentButton)
+    }, [currentButton, setCurrentPage])
 
     return (
         <nav aria-label="Page navigation example">
